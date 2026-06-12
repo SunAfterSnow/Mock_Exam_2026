@@ -1,0 +1,22 @@
+{
+  "name": "railway-exam",
+  "version": "1.0.0",
+  "description": "铁路技能竞赛模拟考试系统 — 离线PWA + 原生移动App",
+  "main": "sw.js",
+  "scripts": {
+    "dev": "python start.py",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "cap:build:android": "cd android && ./gradlew assembleDebug",
+    "cap:update": "cp index.html www/ && cp manifest.json www/ && cp sw.js www/ && cp -r data www/ && cp -r static www/ && npx cap sync"
+  },
+  "keywords": ["railway", "exam", "pwa", "capacitor"],
+  "author": "CRSC",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "@capacitor/cli": "^8.4.0",
+    "@capacitor/core": "^8.4.0"
+  }
+}

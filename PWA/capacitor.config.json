@@ -1,0 +1,14 @@
+{
+  "appId": "com.crsc.railwayexam",
+  "appName": "铁路技能竞赛模拟考试系统",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}

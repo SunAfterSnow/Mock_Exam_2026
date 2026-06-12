@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>铁路技能竞赛模拟考试系统</title>
+<meta name="description" content="铁路技能竞赛模拟考试系统 - 离线可用">
+<meta name="theme-color" content="#1565c0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="铁路技能竞赛模拟考试系统">
+<link rel="apple-touch-icon" href="static/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="static/crsc.ico">
+<script>
+document.documentElement.setAttribute('data-theme', 'light');
+</script>
+<style>
+/* ============================================================
+   THEME VARIABLES (Light theme)
+   ============================================================ */
+:root {
+  --bg-gradient-start: #e8edf2;
+  --bg-gradient-mid: #dce3ea;
+  --bg-gradient-end: #cfd8e0;
+
+  --header-bg: rgba(255,255,255,0.88);
+  --header-border: rgba(0,0,0,0.08);
+  --header-shadow: 0 2px 16px rgba(0,0,0,0.06);
+
+  --card-bg: rgba(255,255,255,0.80);
+  --card-border: rgba(0,0,0,0.08);
+  --card-heading-border: rgba(0,0,0,0.08);
+  --surface-dark: rgba(0,0,0,0.04);
+  --surface-dark-strong: rgba(0,0,0,0.06);
+  --surface-dark-light: rgba(0,0,0,0.03);
+  --question-card-bg: rgba(0,0,0,0.02);
+  --question-card-border: rgba(0,0,0,0.06);
+
+  --text-body: #1a202c;
+  --text-heading: #1a202c;
+  --text-muted: #64748b;
+  --text-muted-heavy: #475569;
+  --text-hint: #94a3b8;
+  --text-link: #2563eb;
+
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #1a202c;
+  --input-focus: #2563eb;
+  --input-error: #dc2626;
+
+  --choice-bg: #f8fafc;
+  --choice-border: #e2e8f0;
+  --choice-hover-bg: #f1f5f9;
+  --choice-hover-border: #cbd5e1;
+  --choice-selected-bg: rgba(37,99,235,0.10);
+  --choice-selected-border: #2563eb;
+  --choice-accent: #2563eb;
+
+  --alert-error-bg: rgba(220,38,38,0.08);
+  --alert-error-border: rgba(220,38,38,0.25);
+  --alert-error-text: #b91c1c;
+  --alert-success-bg: rgba(22,163,74,0.08);
+  --alert-success-border: rgba(22,163,74,0.25);
+  --alert-success-text: #15803d;
+  --alert-info-bg: rgba(37,99,235,0.08);
+  --alert-info-border: rgba(37,99,235,0.25);
+  --alert-info-text: #1d4ed8;
+
+  --result-correct: #16a34a;
+  --result-wrong: #dc2626;
+  --result-ref: #ea580c;
+  --result-ref-hover: #c2410c;
+
+  --table-border: rgba(0,0,0,0.06);
+  --table-header-bg: rgba(0,0,0,0.03);
+  --table-header-text: #475569;
+  --table-hover: rgba(0,0,0,0.02);
+
+  --modal-overlay: rgba(0,0,0,0.45);
+  --modal-bg: #ffffff;
+  --modal-border: rgba(0,0,0,0.12);
+  --modal-close: #64748b;
+  --modal-close-hover: #1a202c;
+  --modal-answer-text: #15803d;
+  --modal-answer-bg: rgba(22,163,74,0.08);
+  --modal-answer-border: rgba(22,163,74,0.20);
+
+  --compare-user-bg: rgba(220,38,38,0.08);
+  --compare-user-border: rgba(220,38,38,0.20);
+  --compare-correct-bg: rgba(22,163,74,0.08);
+  --compare-correct-border: rgba(22,163,74,0.20);
+  --compare-ref-bg: rgba(234,88,12,0.08);
+  --compare-ref-border: rgba(234,88,12,0.20);
+  --compare-label: #64748b;
+
+  --spinner-track: rgba(0,0,0,0.10);
+  --spinner-thumb: #2563eb;
+
+  --qa-fill-bg: #1565c0;
+  --qa-choice-bg: #6a1b9a;
+  --qa-judge-bg: #2e7d32;
+  --qa-short-bg: #e65100;
+  --qa-comp-bg: #b71c1c;
+  --qa-badge-text: #ffffff;
+
+  --install-banner-bg: #1565c0;
+  --install-banner-text: #ffffff;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei",
+               "微软雅黑", sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid) 50%, var(--bg-gradient-end) 100%);
+  min-height: 100vh;
+  color: var(--text-body);
+  line-height: 1.6;
+}
+a { color: var(--text-link); text-decoration: none; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  padding: 24px 28px;
+  margin-bottom: 8px;
+  background: var(--header-bg);
+  border: 1px solid var(--header-border);
+  border-radius: 12px;
+  box-shadow: var(--header-shadow);
+  backdrop-filter: blur(8px);
+}
+header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  letter-spacing: 2px;
+  margin: 0;
+}
+header .header-logo {
+  height: 2.4em;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+header .header-english {
+  display: block;
+  height: 1.2rem;
+  margin: 4px auto 0;
+  opacity: 0.75;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(8px);
+}
+.card h2 {
+  font-size: 1.2rem;
+  color: var(--text-heading);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--card-heading-border);
+}
+.card h3 {
+  font-size: 1rem;
+  color: var(--text-muted-heavy);
+  margin: 16px 0 8px;
+}
+
+/* ============================================================
+   INSTALL BANNER
+   ============================================================ */
+#installBanner {
+  display: none;
+  background: var(--install-banner-bg);
+  color: var(--install-banner-text);
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+#installBanner.show { display: flex; }
+#installBanner .install-text { font-weight: 600; font-size: 0.95rem; }
+#installBtn {
+  background: #ffffff;
+  color: #1565c0;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+#installDismiss {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.form-row label {
+  min-width: 80px;
+  font-weight: 600;
+  color: var(--text-muted-heavy);
+  font-size: 0.9rem;
+}
+.form-row input[type="number"],
+.form-row select {
+  width: 100px;
+  padding: 8px 10px;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-row input[type="number"]:focus,
+.form-row select:focus { border-color: var(--input-focus); }
+.form-row .hint {
+  font-size: 0.8rem;
+  color: var(--text-hint);
+  margin-left: 4px;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.type-item {
+  background: var(--surface-dark);
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid var(--card-border);
+}
+.type-item .type-name {
+  font-weight: 700;
+  color: var(--text-heading);
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+.type-item .type-available {
+  font-size: 0.8rem;
+  color: var(--text-hint);
+  margin-bottom: 6px;
+}
+.type-item .type-inputs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.type-item .type-inputs label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  min-width: auto;
+}
+.type-item .type-inputs input { width: 70px; }
+
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #1565c0, #1976d2);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1976d2, #1e88e5);
+  box-shadow: 0 4px 16px rgba(25,118,210,0.4);
+}
+.btn-success {
+  background: linear-gradient(135deg, #2e7d32, #388e3c);
+  color: #fff;
+}
+.btn-success:hover:not(:disabled) {
+  background: linear-gradient(135deg, #388e3c, #43a047);
+}
+.btn-danger {
+  background: linear-gradient(135deg, #c62828, #d32f2f);
+  color: #fff;
+}
+.btn-warning {
+  background: linear-gradient(135deg, #e65100, #ef6c00);
+  color: #fff;
+}
+.btn-sm { padding: 6px 14px; font-size: 0.85rem; }
+.btn-lg { padding: 14px 36px; font-size: 1.1rem; }
+
+.center { text-align: center; }
+.mt-12 { margin-top: 12px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-12 { margin-bottom: 12px; }
+
+/* ============================================================
+   EXAM PANEL
+   ============================================================ */
+.exam-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--surface-dark-strong);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.exam-header .progress {
+  font-size: 0.95rem;
+  color: var(--text-muted-heavy);
+  font-weight: 600;
+}
+.exam-header .timer {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-heading);
+  background: rgba(0,0,0,0.08);
+  padding: 6px 16px;
+  border-radius: 8px;
+}
+.exam-header .timer.warning { color: #ff9800; animation: pulse 1s infinite; }
+.exam-header .timer.danger { color: #f44336; animation: pulse 0.5s infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.question-card {
+  background: var(--question-card-bg);
+  border-radius: 10px;
+  padding: 24px;
+  min-height: 200px;
+  border: 1px solid var(--question-card-border);
+}
+.question-card .q-meta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.question-card .q-type {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.q-type.fill { background: var(--qa-fill-bg); color: var(--qa-badge-text); }
+.q-type.choice { background: var(--qa-choice-bg); color: var(--qa-badge-text); }
+.q-type.judge { background: var(--qa-judge-bg); color: var(--qa-badge-text); }
+.q-type.short_answer { background: var(--qa-short-bg); color: var(--qa-badge-text); }
+.q-type.comprehensive { background: var(--qa-comp-bg); color: var(--qa-badge-text); }
+.question-card .q-score {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  align-self: center;
+}
+.question-card .q-text {
+  font-size: 1.05rem;
+  color: var(--text-heading);
+  margin-bottom: 20px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+.question-card .q-answer-area { margin-top: 12px; }
+
+.answer-text {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.answer-text:focus { border-color: var(--input-focus); }
+.answer-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-size: 0.95rem;
+  resize: vertical;
+  outline: none;
+  font-family: inherit;
+}
+.answer-textarea:focus { border-color: var(--input-focus); }
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--choice-bg);
+  border: 1px solid var(--choice-border);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-body);
+  transition: all 0.2s;
+}
+.radio-group label:hover {
+  background: var(--choice-hover-bg);
+  border-color: var(--choice-hover-border);
+}
+.radio-group label.selected {
+  background: var(--choice-selected-bg);
+  border-color: var(--choice-selected-border);
+  color: var(--text-heading);
+}
+.radio-group input[type="radio"] { accent-color: var(--choice-accent); width: 18px; height: 18px; }
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   RESULTS PANEL
+   ============================================================ */
+.result-summary {
+  text-align: center;
+  padding: 30px;
+  background: var(--surface-dark-light);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.result-summary .score-big {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--result-correct);
+}
+.result-summary .score-max {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+.result-summary .score-pct {
+  font-size: 1.5rem;
+  color: var(--result-ref);
+  font-weight: 700;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.result-table th, .result-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--table-border);
+}
+.result-table th {
+  background: var(--table-header-bg);
+  color: var(--table-header-text);
+  font-weight: 700;
+  position: sticky;
+  top: 0;
+}
+.result-table tr:hover td { background: var(--table-hover); }
+.result-table .correct-icon { color: var(--result-correct); font-weight: 700; font-size: 1.1rem; }
+.result-table .wrong-icon { color: var(--result-wrong); font-weight: 700; font-size: 1.1rem; }
+.result-table .ref-icon { color: var(--result-ref); font-weight: 700; }
+.ref-link {
+  color: var(--result-ref); font-weight: 700; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+  white-space: nowrap;
+}
+.ref-link:hover { color: var(--result-ref-hover); }
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--modal-overlay); z-index: 999;
+  justify-content: center; align-items: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-box {
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: 12px;
+  max-width: 700px; width: 90%; max-height: 80vh;
+  overflow-y: auto; padding: 28px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.modal-box h3 { color: var(--text-heading); margin-bottom: 14px; font-size: 1.1rem; }
+.modal-box .modal-q {
+  color: var(--text-muted-heavy); font-size: 0.9rem; margin-bottom: 16px;
+  padding: 12px; background: var(--surface-dark-light); border-radius: 6px;
+  line-height: 1.7;
+}
+.modal-box .modal-a {
+  color: var(--modal-answer-text); font-size: 0.95rem;
+  padding: 12px; background: var(--modal-answer-bg);
+  border: 1px solid var(--modal-answer-border); border-radius: 6px;
+  line-height: 1.8; white-space: pre-wrap;
+}
+.modal-close {
+  float: right; background: none; border: none; color: var(--modal-close);
+  font-size: 1.4rem; cursor: pointer; padding: 4px 8px; line-height: 1;
+}
+.modal-close:hover { color: var(--modal-close-hover); }
+
+.answer-compare {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.answer-compare > div {
+  flex: 1;
+  min-width: 180px;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+.answer-compare .user-ans {
+  background: var(--compare-user-bg);
+  border: 1px solid var(--compare-user-border);
+}
+.answer-compare .user-ans.correct {
+  background: var(--compare-correct-bg);
+  border-color: var(--compare-correct-border);
+}
+.answer-compare .ref-ans {
+  background: var(--compare-ref-bg);
+  border: 1px solid var(--compare-ref-border);
+}
+.answer-compare .label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  color: var(--compare-label);
+}
+
+/* ============================================================
+   STATUS & MESSAGES
+   ============================================================ */
+.alert {
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  font-size: 0.9rem;
+  display: none;
+}
+.alert.show { display: block; }
+.alert-error {
+  background: var(--alert-error-bg);
+  border: 1px solid var(--alert-error-border);
+  color: var(--alert-error-text);
+}
+.alert-success {
+  background: var(--alert-success-bg);
+  border: 1px solid var(--alert-success-border);
+  color: var(--alert-success-text);
+}
+.alert-info {
+  background: var(--alert-info-bg);
+  border: 1px solid var(--alert-info-border);
+  color: var(--alert-info-text);
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px; height: 20px;
+  border: 3px solid var(--spinner-track);
+  border-top-color: var(--spinner-thumb);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+#loadingOverlay {
+  display: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(255,255,255,0.7); z-index: 998;
+  justify-content: center; align-items: center;
+  flex-direction: column; gap: 12px;
+}
+#loadingOverlay.show { display: flex; }
+#loadingOverlay .load-text { font-size: 1rem; color: var(--text-muted-heavy); }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 640px) {
+  .container { padding: 10px; }
+  header { padding: 18px 16px; border-radius: 8px; }
+  header h1 { font-size: 1.3rem; }
+  .type-grid { grid-template-columns: 1fr; }
+  .exam-header { flex-direction: column; align-items: flex-start; }
+  .nav-buttons { flex-direction: column; }
+  .result-table { font-size: 0.75rem; }
+}
+
+/* ============================================================
+   SAVE BUTTON AREA
+   ============================================================ */
+.save-area {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   OFFLINE INDICATOR
+   ============================================================ */
+#offlineBadge {
+  display: none;
+  font-size: 0.75rem;
+  background: #f44336;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+#offlineBadge.show { display: inline-block; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-title">
+      <h1><img src="static/crsc_china.png" class="header-logo" alt="">铁路技能竞赛模拟考试系统</h1>
+      <img src="static/crsc_english.png" class="header-english" alt="Railway Skills Competition Simulation Exam">
+    </div>
+  </header>
+
+  <!-- INSTALL BANNER -->
+  <div id="installBanner">
+    <span class="install-text">📲 安装此应用到手机桌面，离线也能用</span>
+    <button id="installBtn">立即安装</button>
+    <button id="installDismiss">暂不</button>
+  </div>
+
+  <!-- STATUS MESSAGES -->
+  <div id="alertBox" class="alert"></div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="load-text">正在加载题库数据...</div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- CONFIGURATION PANEL                                             -->
+  <!-- ================================================================ -->
+  <div id="configPanel" class="card">
+    <h2>📋 考试设置</h2>
+
+    <div class="form-row">
+      <label for="bankSelect">题库选择：</label>
+      <select id="bankSelect" style="width:160px;">
+        <option value="">-- 请选择 --</option>
+      </select>
+      <span class="hint" id="bankTotal"></span>
+    </div>
+
+    <div class="form-row mt-12">
+      <label for="durationInput">考试时长（分钟）：</label>
+      <input type="number" id="durationInput" value="60" min="1" max="300" step="1">
+    </div>
+
+    <h3>各题型抽题设置</h3>
+    <div class="type-grid" id="typeGrid">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="center mt-20">
+      <button class="btn btn-primary btn-lg" id="startBtn" disabled>
+        🚀 开始考试
+      </button>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--text-hint);">
+        简答题和综合题仅供学习参考，不计分，不强制作答
+      </p>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- EXAM PANEL                                                      -->
+  <!-- ================================================================ -->
+  <div id="examPanel" class="card" style="display:none;">
+    <div class="exam-header">
+      <span class="progress" id="progressText">第 1 / 50 题</span>
+      <span class="timer" id="timerDisplay">60:00</span>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-warning btn-sm" id="prevBtn" disabled>◀ 上一题</button>
+      <span style="color:var(--text-muted);font-size:0.85rem;" id="answeredHint"></span>
+      <button class="btn btn-warning btn-sm" id="nextBtn">下一题 ▶</button>
+    </div>
+
+    <div class="nav-buttons mt-12" style="justify-content:flex-end;">
+      <button class="btn btn-danger" id="submitBtn" disabled>📝 提交答卷</button>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- RESULTS PANEL                                                   -->
+  <!-- ================================================================ -->
+  <div id="resultsPanel" class="card" style="display:none;">
+    <h2>📊 考试成绩</h2>
+    <div class="result-summary" id="resultSummary">
+      <!-- Populated by JS -->
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="result-table" id="resultTable">
+        <!-- Populated by JS -->
+      </table>
+    </div>
+    <div class="save-area">
+      <button class="btn btn-primary" id="saveResultsBtn">💾 下载成绩到本地</button>
+      <button class="btn btn-success" id="newExamBtn">🔄 重新考试</button>
+    </div>
+  </div>
+
+</div> <!-- /container -->
+
+  <!-- REFERENCE ANSWER MODAL -->
+  <div class="modal-overlay" id="refModal">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()" title="关闭">&times;</button>
+      <h3>📖 参考答案</h3>
+      <div class="modal-q" id="modalQuestion"></div>
+      <div class="modal-a" id="modalAnswer"></div>
+    </div>
+  </div>
+
+<!-- ================================================================ -->
+<!-- JAVASCRIPT                                                       -->
+<!-- ================================================================ -->
+<script>
+// ======================================================================
+// GLOBAL CONSTANTS & CONFIG
+// ======================================================================
+const TYPE_LABELS = {
+  fill: '填空题',
+  choice: '单选题',
+  judge: '判断题',
+  short_answer: '简答题',
+  comprehensive: '综合题'
+};
+const SCORED_TYPES = new Set(['fill', 'choice', 'judge']);
+const REFERENCE_TYPES = new Set(['short_answer', 'comprehensive']);
+const ALL_TYPES = ['fill', 'choice', 'judge', 'short_answer', 'comprehensive'];
+
+// Bank config — maps display name to JSON data file
+const BANK_CONFIG = {
+  '通信工': 'data/通信工.json',
+  '信号工': 'data/信号工.json',
+};
+
+// ======================================================================
+// GLOBAL STATE
+// ======================================================================
+let bankCache = {};          // { bankName: [questions] }
+let bankSummaryCache = {};   // { bankName: { fill: N, ... } }
+let dataLoaded = false;
+
+let examState = {
+  questions: [],
+  answers: {},
+  scores: {},
+  durationSeconds: 3600,
+  currentIndex: 0,
+  timerId: null,
+  remainingSeconds: 0,
+  submitted: false,
+};
+
+// ======================================================================
+// DOM REFS
+// ======================================================================
+const $alert = document.getElementById('alertBox');
+const $configPanel = document.getElementById('configPanel');
+const $examPanel = document.getElementById('examPanel');
+const $resultsPanel = document.getElementById('resultsPanel');
+const $bankSelect = document.getElementById('bankSelect');
+const $bankTotal = document.getElementById('bankTotal');
+const $durationInput = document.getElementById('durationInput');
+const $typeGrid = document.getElementById('typeGrid');
+const $startBtn = document.getElementById('startBtn');
+const $questionCard = document.getElementById('questionCard');
+const $progressText = document.getElementById('progressText');
+const $timerDisplay = document.getElementById('timerDisplay');
+const $prevBtn = document.getElementById('prevBtn');
+const $nextBtn = document.getElementById('nextBtn');
+const $submitBtn = document.getElementById('submitBtn');
+const $answeredHint = document.getElementById('answeredHint');
+const $resultSummary = document.getElementById('resultSummary');
+const $resultTable = document.getElementById('resultTable');
+const $loadingOverlay = document.getElementById('loadingOverlay');
+const $offlineBadge = document.getElementById('offlineBadge');
+
+// ======================================================================
+// UTILITY
+// ======================================================================
+function showAlert(msg, type) {
+  $alert.textContent = msg;
+  $alert.className = 'alert alert-' + type + ' show';
+}
+function hideAlert() {
+  $alert.className = 'alert';
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function showLoading(msg) {
+  $loadingOverlay.querySelector('.load-text').textContent = msg || '正在加载...';
+  $loadingOverlay.classList.add('show');
+}
+function hideLoading() {
+  $loadingOverlay.classList.remove('show');
+}
+
+// ======================================================================
+// DATA LOADING (replaces /api/banks)
+// ======================================================================
+async function loadBankData(bankName) {
+  if (bankCache[bankName]) return bankCache[bankName];
+
+  const url = BANK_CONFIG[bankName];
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error('无法加载题库: ' + bankName);
+  const questions = await resp.json();
+  bankCache[bankName] = questions;
+
+  // Compute summary
+  const summary = {};
+  for (const t of ALL_TYPES) {
+    summary[t] = questions.filter(q => q.type === t).length;
+  }
+  summary.total = questions.length;
+  bankSummaryCache[bankName] = summary;
+
+  return questions;
+}
+
+function getBankSummary(bankName) {
+  return bankSummaryCache[bankName] || null;
+}
+
+// ======================================================================
+// INITIALIZATION (replaces the original init() with /api/banks)
+// ======================================================================
+async function init() {
+  try {
+    showLoading('正在加载题库数据...');
+    // Load all banks in parallel
+    await Promise.all(Object.keys(BANK_CONFIG).map(name => loadBankData(name)));
+    dataLoaded = true;
+    hideLoading();
+    populateBankSelect();
+    updateOnlineStatus();
+    console.log('题库数据加载完毕');
+  } catch (err) {
+    hideLoading();
+    showAlert('无法加载题库数据。请检查网络连接后刷新页面。', 'error');
+    console.error(err);
+  }
+}
+
+function populateBankSelect() {
+  $bankSelect.innerHTML = '<option value="">-- 请选择题库 --</option>';
+  for (const [name] of Object.entries(BANK_CONFIG)) {
+    const info = getBankSummary(name);
+    if (!info) continue;
+    const opt = document.createElement('option');
+    opt.value = name;
+    opt.textContent = name + ' (' + info.total + ' 题)';
+    $bankSelect.appendChild(opt);
+  }
+}
+
+// ======================================================================
+// BANK SELECTION → UPDATE TYPE GRID
+// ======================================================================
+$bankSelect.addEventListener('change', function () {
+  const name = this.value;
+  if (!name) {
+    $typeGrid.innerHTML = '<p style="color:var(--text-hint);">请先选择题库</p>';
+    $bankTotal.textContent = '';
+    $startBtn.disabled = true;
+    return;
+  }
+  const info = getBankSummary(name);
+  if (!info) return;
+  $bankTotal.textContent = '（共 ' + info.total + ' 题）';
+  renderTypeGrid(name, info);
+  $startBtn.disabled = false;
+});
+
+function renderTypeGrid(bankName, info) {
+  const types = [
+    { key: 'fill', score: 2 },
+    { key: 'choice', score: 1 },
+    { key: 'judge', score: 1 },
+    { key: 'short_answer', score: 0 },
+    { key: 'comprehensive', score: 0 },
+  ];
+
+  $typeGrid.innerHTML = types.map(t => {
+    const available = info[t.key] || 0;
+    const scored = SCORED_TYPES.has(t.key);
+    const defaultCount = Math.min(5, available);
+    return `
+      <div class="type-item">
+        <div class="type-name">${TYPE_LABELS[t.key]}</div>
+        <div class="type-available">题库可用：<strong>${available}</strong> 题 ${scored ? '（计分）' : '（参考，不计分）'}</div>
+        <div class="type-inputs">
+          <label>抽题数：<input type="number" id="count_${t.key}"
+                 value="${available > 0 ? defaultCount : 0}" min="0" max="${available}" step="1"
+                 data-available="${available}"></label>
+          ${scored ? `<label>每题分值：<input type="number" id="score_${t.key}"
+                 value="${t.score}" min="0" max="100" step="0.5"></label>` : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  $typeGrid.querySelectorAll('input[id^="count_"]').forEach(inp => {
+    inp.addEventListener('input', validateCounts);
+  });
+}
+
+function validateCounts() {
+  let valid = true;
+  $typeGrid.querySelectorAll('input[id^="count_"]').forEach(inp => {
+    const v = parseInt(inp.value, 10);
+    const max = parseInt(inp.dataset.available, 10);
+    if (isNaN(v) || v < 0 || v > max) {
+      inp.style.borderColor = '#f44336';
+      valid = false;
+    } else {
+      inp.style.borderColor = '';
+    }
+  });
+  return valid;
+}
+
+// ======================================================================
+// PAPER GENERATION (replaces POST /api/generate_paper)
+// ======================================================================
+function generatePaper(bankName, counts, scores, durationMinutes) {
+  const questions = bankCache[bankName];
+  if (!questions) throw new Error('题库未加载: ' + bankName);
+
+  // Group by type
+  const byType = {};
+  for (const t of ALL_TYPES) {
+    byType[t] = questions.filter(q => q.type === t);
+  }
+
+  // Validate
+  for (const t of ALL_TYPES) {
+    const requested = counts[t] || 0;
+    const available = byType[t].length;
+    if (requested < 0) throw new Error('无效的抽题数量: ' + t);
+    if (requested > available) throw new Error(
+      `${TYPE_LABELS[t]}数量不足。需要: ${requested}, 可用: ${available}`
+    );
+  }
+
+  if (!durationMinutes || durationMinutes < 1) {
+    throw new Error('考试时长至少 1 分钟');
+  }
+
+  for (const t of SCORED_TYPES) {
+    const s = scores[t] || 0;
+    if (s < 0) throw new Error('无效分值: ' + t);
+  }
+
+  // Random draw
+  const drawn = [];
+  for (const t of ALL_TYPES) {
+    const n = counts[t] || 0;
+    if (n > 0) {
+      const pool = [...byType[t]];
+      // Fisher-Yates shuffle
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      for (const q of pool.slice(0, n)) {
+        drawn.push({
+          ...q,
+          score_per: SCORED_TYPES.has(t) ? (scores[t] || 0) : 0,
+        });
+      }
+    }
+  }
+
+  // Assign indices
+  drawn.forEach((q, i) => { q.index = i; });
+
+  const maxScore = drawn
+    .filter(q => SCORED_TYPES.has(q.type))
+    .reduce((sum, q) => sum + q.score_per, 0);
+
+  return {
+    questions: drawn,
+    total: drawn.length,
+    max_score: maxScore,
+    duration_seconds: durationMinutes * 60,
+    scores: scores,
+  };
+}
+
+// ======================================================================
+// FUZZY MATCH (replaces Python fuzzy_match)
+// ======================================================================
+function fuzzyMatch(userAnswer, correctAnswer) {
+  function normalise(s) {
+    s = s.toLowerCase().trim();
+    s = s.replace(/\s+/g, '');
+    s = s.replace(/[，。；：、！？《》（）—…,\.;:!\?\(\)\[\]\{\}]/g, '');
+    return s;
+  }
+
+  const userNorm = normalise(userAnswer);
+  const correctNorm = normalise(correctAnswer);
+
+  if (!userNorm || !correctNorm) return false;
+
+  // Exact match after normalisation
+  if (userNorm === correctNorm) return true;
+
+  // Split correct answer into key tokens (>=2 chars each)
+  const keyTokens = correctAnswer.toLowerCase().trim()
+    .split(/[，,;；\s]+/)
+    .filter(t => t.length >= 2);
+
+  if (keyTokens.length === 0) return userNorm === correctNorm;
+
+  // Accept if user answer contains >=60% of key tokens
+  const matched = keyTokens.filter(t => userNorm.includes(t)).length;
+  const ratio = matched / keyTokens.length;
+  return ratio >= 0.6;
+}
+
+// ======================================================================
+// GRADE ANSWER (replaces Python grade_answer)
+// ======================================================================
+function gradeAnswer(qtype, userAnswer, correctAnswer) {
+  if (REFERENCE_TYPES.has(qtype)) {
+    return { correct: null, score: 0, max_score: 0 };
+  }
+
+  if (qtype === 'choice') {
+    const u = (userAnswer || '').trim().toUpperCase();
+    const c = (correctAnswer || '').trim().toUpperCase();
+    return { correct: u === c, score: 0, max_score: 0 };
+  }
+
+  if (qtype === 'judge') {
+    const u = (userAnswer || '').trim()
+      .replace(/✓/g, '对').replace(/√/g, '对')
+      .replace(/✗/g, '错').replace(/×/g, '错');
+    const c = (correctAnswer || '').trim()
+      .replace(/✓/g, '对').replace(/√/g, '对')
+      .replace(/✗/g, '错').replace(/×/g, '错');
+    return { correct: u === c, score: 0, max_score: 0 };
+  }
+
+  if (qtype === 'fill') {
+    const ok = fuzzyMatch(userAnswer, correctAnswer);
+    return { correct: ok, score: 0, max_score: 0 };
+  }
+
+  return { correct: false, score: 0, max_score: 0 };
+}
+
+// ======================================================================
+// PAPER SUBMISSION & GRADING (replaces POST /api/submit)
+// ======================================================================
+function submitAndGrade(questions, answers, timeUsedSeconds) {
+  const results = [];
+  let totalScore = 0;
+  let maxScore = 0;
+
+  for (const q of questions) {
+    const idx = String(q.index);
+    const qtype = q.type;
+    const correct = q.answer;
+    const user = answers[idx] || '';
+
+    const grade = gradeAnswer(qtype, user, correct);
+
+    if (SCORED_TYPES.has(qtype)) {
+      const sp = q.score_per || 0;
+      grade.score = grade.correct ? sp : 0;
+      grade.max_score = sp;
+      maxScore += sp;
+      totalScore += grade.score;
+    } else {
+      grade.score = 0;
+      grade.max_score = 0;
+    }
+
+    results.push({
+      index: q.index,
+      type: qtype,
+      number: q.number,
+      question: q.question,
+      user_answer: user,
+      correct_answer: correct,
+      is_correct: grade.correct,
+      score: grade.score,
+      max_score: grade.max_score,
+    });
+  }
+
+  return {
+    results: results,
+    total_score: totalScore,
+    max_score: maxScore,
+    time_used_seconds: timeUsedSeconds,
+  };
+}
+
+// ======================================================================
+// SAVE RESULTS (replaces POST /api/save_results — triggers download)
+// ======================================================================
+function saveResultsToFile() {
+  const bankName = $bankSelect.value || 'unknown';
+  const now = new Date();
+  const ts = now.getFullYear() +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    String(now.getDate()).padStart(2, '0') + '_' +
+    String(now.getHours()).padStart(2, '0') +
+    String(now.getMinutes()).padStart(2, '0') +
+    String(now.getSeconds()).padStart(2, '0');
+  const filename = `RailwayExam_${bankName}_${ts}.json`;
+
+  const data = {
+    bank: bankName,
+    timestamp: now.toISOString(),
+    scores: examState.scores,
+    duration_seconds: examState.durationSeconds,
+    time_used_seconds: examState.durationSeconds - Math.max(0, examState.remainingSeconds),
+    results: examState.questions.map(q => ({
+      index: q.index,
+      type: q.type,
+      number: q.number,
+      question: q.question,
+      user_answer: examState.answers[q.index] || '',
+      correct_answer: q.answer,
+    })),
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  return filename;
+}
+
+// ======================================================================
+// START EXAM (replaces the API call version)
+// ======================================================================
+$startBtn.addEventListener('click', async function () {
+  if (!validateCounts()) {
+    showAlert('请修正抽题数量（红色边框的输入项超出可用范围）。', 'error');
+    return;
+  }
+
+  const bank = $bankSelect.value;
+  if (!bank) {
+    showAlert('请先选择题库。', 'error');
+    return;
+  }
+
+  const counts = {};
+  const scores = {};
+  let totalCount = 0;
+
+  for (const t of ALL_TYPES) {
+    const cEl = document.getElementById('count_' + t);
+    counts[t] = cEl ? parseInt(cEl.value, 10) || 0 : 0;
+    totalCount += counts[t];
+    if (SCORED_TYPES.has(t)) {
+      const sEl = document.getElementById('score_' + t);
+      scores[t] = sEl ? parseFloat(sEl.value) || 0 : 0;
+    }
+  }
+
+  if (totalCount === 0) {
+    showAlert('请至少选择一道题目。', 'error');
+    return;
+  }
+
+  const duration = parseInt($durationInput.value, 10) || 60;
+
+  try {
+    // Ensure bank data is loaded
+    if (!bankCache[bank]) {
+      showAlert('正在加载题库...', 'info');
+      await loadBankData(bank);
+    }
+
+    const paper = generatePaper(bank, counts, scores, duration);
+
+    examState.questions = paper.questions;
+    examState.answers = {};
+    examState.scores = scores;
+    examState.durationSeconds = paper.duration_seconds;
+    examState.remainingSeconds = paper.duration_seconds;
+    examState.currentIndex = 0;
+    examState.submitted = false;
+
+    examState.questions.forEach(q => { examState.answers[q.index] = ''; });
+
+    hideAlert();
+    $configPanel.style.display = 'none';
+    $resultsPanel.style.display = 'none';
+    $examPanel.style.display = '';
+    $submitBtn.disabled = true;
+
+    renderQuestion();
+    updateNavButtons();
+    updateSubmitButton();
+    startTimer();
+
+  } catch (err) {
+    showAlert('生成试卷失败：' + err.message, 'error');
+    $startBtn.disabled = false;
+    console.error(err);
+  }
+});
+
+// ======================================================================
+// RENDER CURRENT QUESTION
+// ======================================================================
+function renderQuestion() {
+  const q = examState.questions[examState.currentIndex];
+  if (!q) return;
+
+  const typeLabel = TYPE_LABELS[q.type] || q.type;
+  const scored = SCORED_TYPES.has(q.type);
+  const scoreInfo = scored ? ' | 分值：' + q.score_per + ' 分' : ' | 参考题';
+
+  $questionCard.innerHTML = `
+    <div class="q-meta">
+      <span class="q-type ${q.type}">${typeLabel}</span>
+      <span class="q-score">题库编号：${q.number}${scoreInfo}</span>
+    </div>
+    <div class="q-text">${escapeHtml(q.question)}</div>
+    <div class="q-answer-area" id="answerArea">
+      ${renderAnswerInput(q)}
+    </div>
+  `;
+
+  attachAnswerHandlers(q);
+
+  $progressText.textContent = '第 ' + (examState.currentIndex + 1) + ' / ' +
+    examState.questions.length + ' 题';
+  $answeredHint.textContent = getAnsweredCount();
+}
+
+function renderAnswerInput(q) {
+  const idx = q.index;
+  const currentAnswer = examState.answers[idx] || '';
+
+  switch (q.type) {
+    case 'fill':
+      return `<input type="text" class="answer-text" id="ans_${idx}"
+              value="${escapeAttr(currentAnswer)}"
+              placeholder="请输入答案（可包含多个关键词）...">`;
+
+    case 'choice':
+      return `
+        <div class="radio-group" id="choice_${idx}">
+          ${['A', 'B', 'C', 'D'].map(letter => `
+            <label class="${currentAnswer === letter ? 'selected' : ''}">
+              <input type="radio" name="choice_${idx}" value="${letter}"
+                     ${currentAnswer === letter ? 'checked' : ''}>
+              ${letter}
+            </label>
+          `).join('')}
+        </div>`;
+
+    case 'judge':
+      return `
+        <div class="radio-group" id="judge_${idx}">
+          <label class="${currentAnswer === '对' ? 'selected' : ''}">
+            <input type="radio" name="judge_${idx}" value="对"
+                   ${currentAnswer === '对' ? 'checked' : ''}> ✓ 对
+          </label>
+          <label class="${currentAnswer === '错' ? 'selected' : ''}">
+            <input type="radio" name="judge_${idx}" value="错"
+                   ${currentAnswer === '错' ? 'checked' : ''}> ✗ 错
+          </label>
+        </div>`;
+
+    case 'short_answer':
+    case 'comprehensive':
+      return `<textarea class="answer-textarea" id="ans_${idx}"
+              placeholder="请输入你的答案（本题为参考题，不计分，选填）...">${escapeHtml(currentAnswer)}</textarea>`;
+
+    default:
+      return `<p style="color:#f44336;">未知题型：${q.type}</p>`;
+  }
+}
+
+function attachAnswerHandlers(q) {
+  const idx = q.index;
+
+  switch (q.type) {
+    case 'fill': {
+      const el = document.getElementById('ans_' + idx);
+      if (el) el.addEventListener('input', () => {
+        examState.answers[idx] = el.value;
+        updateSubmitButton();
+        $answeredHint.textContent = getAnsweredCount();
+      });
+      break;
+    }
+    case 'choice': {
+      const radios = document.querySelectorAll('input[name="choice_' + idx + '"]');
+      radios.forEach(r => r.addEventListener('change', () => {
+        examState.answers[idx] = r.value;
+        document.querySelectorAll('#choice_' + idx + ' label').forEach(l => {
+          l.classList.toggle('selected', l.querySelector('input').checked);
+        });
+        updateSubmitButton();
+        $answeredHint.textContent = getAnsweredCount();
+      }));
+      break;
+    }
+    case 'judge': {
+      const radios = document.querySelectorAll('input[name="judge_' + idx + '"]');
+      radios.forEach(r => r.addEventListener('change', () => {
+        examState.answers[idx] = r.value;
+        document.querySelectorAll('#judge_' + idx + ' label').forEach(l => {
+          l.classList.toggle('selected', l.querySelector('input').checked);
+        });
+        updateSubmitButton();
+        $answeredHint.textContent = getAnsweredCount();
+      }));
+      break;
+    }
+    case 'short_answer':
+    case 'comprehensive': {
+      const el = document.getElementById('ans_' + idx);
+      if (el) el.addEventListener('input', () => {
+        examState.answers[idx] = el.value;
+        updateSubmitButton();
+        $answeredHint.textContent = getAnsweredCount();
+      });
+      break;
+    }
+  }
+}
+
+// ======================================================================
+// ANSWERED COUNT
+// ======================================================================
+function getAnsweredCount() {
+  let answered = 0;
+  let total = 0;
+  for (const q of examState.questions) {
+    if (SCORED_TYPES.has(q.type)) {
+      total++;
+      const ans = examState.answers[q.index];
+      if (ans !== undefined && ans !== null && ans.trim() !== '') {
+        answered++;
+      }
+    }
+  }
+  return '已答：' + answered + ' / ' + total + '（仅计分题）';
+}
+
+function updateSubmitButton() {
+  let allAnswered = true;
+  for (const q of examState.questions) {
+    if (SCORED_TYPES.has(q.type)) {
+      const ans = examState.answers[q.index];
+      if (ans === undefined || ans === null || ans.trim() === '') {
+        allAnswered = false;
+        break;
+      }
+    }
+  }
+  const hasScored = examState.questions.some(q => SCORED_TYPES.has(q.type));
+  $submitBtn.disabled = !allAnswered || !hasScored || examState.submitted;
+}
+
+// ======================================================================
+// NAVIGATION
+// ======================================================================
+function updateNavButtons() {
+  $prevBtn.disabled = examState.currentIndex === 0;
+  $nextBtn.disabled = examState.currentIndex >= examState.questions.length - 1;
+}
+
+$prevBtn.addEventListener('click', () => {
+  if (examState.currentIndex > 0) {
+    examState.currentIndex--;
+    renderQuestion();
+    updateNavButtons();
+  }
+});
+
+$nextBtn.addEventListener('click', () => {
+  if (examState.currentIndex < examState.questions.length - 1) {
+    examState.currentIndex++;
+    renderQuestion();
+    updateNavButtons();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (examState.submitted || $examPanel.style.display === 'none') return;
+  if (e.key === 'ArrowLeft' && !$prevBtn.disabled) $prevBtn.click();
+  if (e.key === 'ArrowRight' && !$nextBtn.disabled) $nextBtn.click();
+});
+
+// ======================================================================
+// TIMER
+// ======================================================================
+function startTimer() {
+  clearInterval(examState.timerId);
+  updateTimerDisplay();
+  examState.timerId = setInterval(() => {
+    examState.remainingSeconds--;
+    updateTimerDisplay();
+
+    if (examState.remainingSeconds <= 0) {
+      clearInterval(examState.timerId);
+      autoSubmit();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const secs = examState.remainingSeconds;
+  $timerDisplay.textContent = formatTime(secs);
+  $timerDisplay.classList.remove('warning', 'danger');
+  if (secs <= 60) $timerDisplay.classList.add('danger');
+  else if (secs <= 300) $timerDisplay.classList.add('warning');
+}
+
+// ======================================================================
+// SUBMISSION
+// ======================================================================
+$submitBtn.addEventListener('click', () => {
+  if (confirm('确定要提交答卷吗？提交后无法修改。')) {
+    submitExam();
+  }
+});
+
+function autoSubmit() {
+  showAlert('⏰ 考试时间到，系统将自动提交您的答卷。', 'info');
+  setTimeout(() => submitExam(), 1000);
+}
+
+function submitExam() {
+  if (examState.submitted) return;
+  examState.submitted = true;
+  clearInterval(examState.timerId);
+  $submitBtn.disabled = true;
+  $prevBtn.disabled = true;
+  $nextBtn.disabled = true;
+
+  const timeUsed = examState.durationSeconds - Math.max(0, examState.remainingSeconds);
+
+  try {
+    const result = submitAndGrade(examState.questions, examState.answers, timeUsed);
+
+    hideAlert();
+    $examPanel.style.display = 'none';
+    $resultsPanel.style.display = '';
+    renderResults(result);
+
+  } catch (err) {
+    showAlert('提交失败：' + err.message, 'error');
+    examState.submitted = false;
+    $submitBtn.disabled = false;
+    updateNavButtons();
+    console.error(err);
+  }
+}
+
+// ======================================================================
+// RESULTS RENDERING
+// ======================================================================
+function renderResults(result) {
+  const { results, total_score, max_score, time_used_seconds } = result;
+  const pct = max_score > 0 ? ((total_score / max_score) * 100).toFixed(1) : 'N/A';
+
+  $resultSummary.innerHTML = `
+    <div class="score-big">${total_score} <span style="font-size:1.5rem;">/ ${max_score}</span></div>
+    <div class="score-pct">${pct !== 'N/A' ? '得分率：' + pct + '%' : '参考题无分值'}</div>
+    <div class="score-max" style="margin-top:8px;">用时：${formatTime(time_used_seconds)}</div>
+  `;
+
+  let html = `
+    <thead>
+      <tr>
+        <th style="width:40px;">#</th>
+        <th style="width:70px;">题型</th>
+        <th>题目</th>
+        <th style="width:100px;">你的答案</th>
+        <th style="width:100px;">正确答案</th>
+        <th style="width:85px;">结果</th>
+        <th style="width:70px;">得分</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  results.forEach(r => {
+    const scored = SCORED_TYPES.has(r.type);
+    let resultIcon = '';
+    if (r.is_correct === true) resultIcon = '<span class="correct-icon" style="white-space:nowrap;">✓ 正确</span>';
+    else if (r.is_correct === false) resultIcon = '<span class="wrong-icon" style="white-space:nowrap;">✗ 错误</span>';
+    else {
+      const qText = escapeAttr(r.question);
+      const aText = escapeAttr(r.correct_answer);
+      resultIcon = `<span class="ref-link" onclick="showRefModal('${qText}','${aText}')" title="点击查看参考答案">📖 参考</span>`;
+    }
+
+    const scoreCell = scored ? (r.score + ' / ' + r.max_score) : '—';
+
+    html += `
+      <tr>
+        <td>${r.index + 1}</td>
+        <td><span class="q-type ${r.type}">${TYPE_LABELS[r.type]}</span></td>
+        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+            title="${escapeAttr(r.question)}">${escapeHtml(r.question).substring(0, 60)}...</td>
+        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+            title="${escapeAttr(r.user_answer || '(空)')}">${escapeHtml((r.user_answer || '(空)').substring(0, 40))}</td>
+        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+            title="${escapeAttr(r.correct_answer)}">${escapeHtml(r.correct_answer.substring(0, 40))}</td>
+        <td>${resultIcon}</td>
+        <td>${scoreCell}</td>
+      </tr>`;
+  });
+
+  html += '</tbody>';
+  $resultTable.innerHTML = html;
+  $resultsPanel.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ======================================================================
+// SAVE RESULTS (download)
+// ======================================================================
+document.getElementById('saveResultsBtn').addEventListener('click', () => {
+  try {
+    const filename = saveResultsToFile();
+    showAlert('✅ 成绩已下载到本地：' + filename, 'success');
+  } catch (err) {
+    showAlert('保存失败：' + err.message, 'error');
+  }
+});
+
+// ======================================================================
+// NEW EXAM
+// ======================================================================
+document.getElementById('newExamBtn').addEventListener('click', () => {
+  clearInterval(examState.timerId);
+  examState.submitted = false;
+  examState.questions = [];
+  examState.answers = {};
+  $examPanel.style.display = 'none';
+  $resultsPanel.style.display = 'none';
+  $configPanel.style.display = '';
+  $startBtn.disabled = false;
+  hideAlert();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ======================================================================
+// HTML ESCAPING HELPERS
+// ======================================================================
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+function escapeAttr(str) {
+  return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ======================================================================
+// REFERENCE MODAL
+// ======================================================================
+function showRefModal(questionText, answerText) {
+  document.getElementById('modalQuestion').textContent = questionText;
+  document.getElementById('modalAnswer').textContent = answerText;
+  document.getElementById('refModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('refModal').classList.remove('show');
+}
+
+document.getElementById('refModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ======================================================================
+// ONLINE/OFFLINE STATUS
+// ======================================================================
+function updateOnlineStatus() {
+  const offline = !navigator.onLine;
+  if ($offlineBadge) {
+    $offlineBadge.classList.toggle('show', offline && dataLoaded);
+  }
+}
+
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// ======================================================================
+// PWA INSTALL PROMPT
+// ======================================================================
+let installPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!installPrompt) return;
+  installPrompt.prompt();
+  const { outcome } = await installPrompt.userChoice;
+  console.log('Install prompt outcome:', outcome);
+  installPrompt = null;
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+document.getElementById('installDismiss').addEventListener('click', () => {
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('PWA installed successfully');
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+// ======================================================================
+// SERVICE WORKER REGISTRATION
+// ======================================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+      console.log('Service Worker registered:', reg.scope);
+
+      // Check for updates
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New SW available — notify user
+              if (confirm('有新版本可用，是否立即更新？')) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                window.location.reload();
+              }
+            }
+          });
+        }
+      });
+    }).catch(err => {
+      console.warn('Service Worker registration failed:', err);
+    });
+  });
+}
+
+// ======================================================================
+// STARTUP
+// ======================================================================
+init();
+</script>
+
+</body>
+</html>
